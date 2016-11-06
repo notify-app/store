@@ -1,0 +1,15 @@
+{
+  "name": "notify-store",
+  "version": "0.1.0",
+  "description": "FortuneJS Store for notify",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Luca Tabone <taboneluca3@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "fortune": "^5.0.2",
+    "fortune-mongodb": "^1.1.4"
+  }
+}
