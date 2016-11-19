@@ -20,10 +20,17 @@ module.exports = {
 
   /**
    * init is used to initialize the store.
-   * @param  {String} config.url  URL to connect with the DB.
+   * @param  {String}   config.url        URL to connect with the DB.
+   * @param  {Function} config.authorize  Function to be invoked by FortuneJS
+   *                                      before making any requests to the
+   *                                      Adapter being used. This is used to
+   *                                      verify that the consumer actually is
+   *                                      authorized to access/modify the data
+   *                                      he is requesting.
    */
   init (config) {
     this.store = createFortuneStore(config.url)
+    includeAuthorization(this, config.authorize)
   }
 }
 
@@ -59,4 +66,29 @@ function retrieveModels () {
   }
 
   return models
+}
+
+/**
+ * includeAuthorization includes the authorization function inside the FortuneJS
+ * store.
+ * @param  {Object} notifyStore  Notify Store instance.
+ * @param  {Function} authorize  Authorize function provided by the user.
+ */
+function includeAuthorization (notifyStore, authorize) {
+  if (typeof authorize !== 'function') return
+
+  const originalRequest = notifyStore.store.request.bind(notifyStore.store)
+
+  notifyStore.store.request = function request (options) {
+    let promise = Promise.resolve()
+
+    if ('meta' in options && 'headers' in options.meta) {
+      promise = authorize(notifyStore, options)
+    }
+
+    return promise
+      .then(function () {
+        return originalRequest(options)
+      })
+  }
 }
