@@ -4,6 +4,7 @@ const fortune = require('fortune')
 const mongodbAdapter = require('fortune-mongodb')
 
 const types = require('./src/types')
+const hooks = require('./src/hooks')
 
 module.exports = {
   /**
@@ -11,6 +12,12 @@ module.exports = {
    * @type {Object}
    */
   types: types,
+
+  /**
+   * worker is an IPC-Emitter worker, which will be used to inform its master.
+   * @type {Object}
+   */
+  worker: null,
 
   /**
    * fortune store.
@@ -29,7 +36,8 @@ module.exports = {
    *                                      he is requesting.
    */
   init (config) {
-    this.store = createFortuneStore(config.url)
+    this.worker = config.worker
+    this.store = createFortuneStore.call(this, config.url)
     includeAuthorization(this, config.authorize)
   }
 }
@@ -41,14 +49,18 @@ module.exports = {
 function createFortuneStore (dbURL) {
   const models = retrieveModels()
 
-  return fortune(models, {
+  const opts = {
     adapter: [
       mongodbAdapter,
       {
         url: dbURL
       }
     ]
-  })
+  }
+
+  if (this.worker !== undefined) opts.hooks = hooks(this.worker)
+
+  return fortune(models, opts)
 }
 
 /**
