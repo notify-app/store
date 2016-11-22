@@ -9,7 +9,7 @@
   "author": "Luca Tabone <taboneluca3@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "fortune": "^5.0.2",
-    "fortune-mongodb": "^1.1.4"
+    "fortune": "5.0.2",
+    "fortune-mongodb": "1.1.4"
   }
 }
