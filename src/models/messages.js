@@ -9,6 +9,11 @@ module.exports = {
   content: String,
 
   /**
+   * deleted state.
+   */
+  deleted: Boolean,
+
+  /**
    * user who created the message.
    */
   user: [type.USERS, 'messages'],
