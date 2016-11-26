@@ -1,5 +1,5 @@
 'use strict'
 
 module.exports = (worker) => {
-  return [require('./input')(worker), require('./output')]
+  return [null, require('./output')(worker)]
 }
