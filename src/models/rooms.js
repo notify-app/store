@@ -14,6 +14,11 @@ module.exports = {
   image: String,
 
   /**
+   * private room or not.
+   */
+  private: Boolean,
+
+  /**
    * users who are inside the room.
    */
   users: [[type.USERS], 'rooms'],
