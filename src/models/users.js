@@ -19,6 +19,11 @@ module.exports = {
   image: String,
 
   /**
+   * bot or not.
+   */
+  bot: Boolean,
+
+  /**
    * token identifying the user.
    */
   token: [type.TOKENS, 'user'],
