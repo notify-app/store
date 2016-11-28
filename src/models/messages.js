@@ -14,6 +14,11 @@ module.exports = {
   deleted: Boolean,
 
   /**
+   * created until.
+   */
+  created: Date,
+
+  /**
    * user who created the message.
    */
   user: [type.USERS, 'messages'],
