@@ -99,7 +99,7 @@ function includeAuthorization (notifyStore, authorize) {
     }
 
     return promise
-      .then(function () {
+      .then(() => {
         return originalRequest(options)
       })
   }
