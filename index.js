@@ -20,6 +20,12 @@ module.exports = {
   worker: null,
 
   /**
+   * fortune instance being used by the store.
+   * @type {Fortune}
+   */
+  fortune: fortune,
+
+  /**
    * fortune store.
    * @type {FortuneStore}
    */
@@ -99,8 +105,6 @@ function includeAuthorization (notifyStore, authorize) {
     }
 
     return promise
-      .then(() => {
-        return originalRequest(options)
-      })
+      .then(() => originalRequest(options))
   }
 }
