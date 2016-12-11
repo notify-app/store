@@ -3,7 +3,7 @@
 module.exports = (worker) => {
   return (context, record) => {
     const eventName = `api:${context.request.type}:${context.request.method}`
-    worker.emit(eventName, record)
+    worker.emit(eventName, record, context)
     return record
   }
 }
