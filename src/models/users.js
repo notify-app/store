@@ -11,7 +11,7 @@ module.exports = {
   /**
    * internalID is an ID given by the auth server.
    */
-  interalID: String,
+  internalID: String,
 
   /**
    * image name.
