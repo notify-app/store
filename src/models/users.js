@@ -24,6 +24,11 @@ module.exports = {
   bot: Boolean,
 
   /**
+   * grants the user has.
+   */
+  grants: [[type.GRANTS], 'users'],
+
+  /**
    * token identifying the user.
    */
   token: [type.TOKENS, 'user'],

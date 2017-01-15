@@ -29,5 +29,11 @@ module.exports = {
    * message type.
    * @type {String}
    */
-  MESSAGES: 'messages'
+  MESSAGES: 'messages',
+
+  /**
+   * grant type.
+   * @type {String}
+   */
+  GRANTS: 'grants'
 }
