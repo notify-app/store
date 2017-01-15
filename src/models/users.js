@@ -9,9 +9,9 @@ module.exports = {
   username: String,
 
   /**
-   * password of the user
+   * internalID is an ID given by the auth server.
    */
-  password: String,
+  interalID: String,
 
   /**
    * image name.
