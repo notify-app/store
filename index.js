@@ -8,16 +8,10 @@ const hooks = require('./src/hooks')
 
 module.exports = {
   /**
-   * types being used by the store
+   * types of the models used by the store.
    * @type {Object}
    */
   types: types,
-
-  /**
-   * worker is an IPC-Emitter worker, which will be used to inform its master.
-   * @type {Object}
-   */
-  worker: null,
 
   /**
    * fortune instance being used by the store.
@@ -26,7 +20,7 @@ module.exports = {
   fortune: fortune,
 
   /**
-   * fortune store.
+   * fortune store. This is the instance used to make CRUD operations.
    * @type {FortuneStore}
    */
   store: null,
@@ -38,12 +32,10 @@ module.exports = {
    *                                      before making any requests to the
    *                                      Adapter being used. This is used to
    *                                      verify that the consumer actually is
-   *                                      authorized to access/modify the data
-   *                                      he is requesting.
+   *                                      authorized to access/alter the data.
    */
   init (config) {
-    this.worker = config.worker
-    this.store = createFortuneStore.call(this, config.url)
+    this.store = createFortuneStore.call(this, config)
     includeAuthorization(this, config.authorize)
   }
 }
@@ -52,9 +44,7 @@ module.exports = {
  * createFortuneStore creates and configures the fortune store.
  * @return {FortuneStore}  Fortune store instance.
  */
-function createFortuneStore (dbURL) {
-  const models = retrieveModels()
-
+function createFortuneStore ({ dbURL, worker }) {
   const opts = {
     adapter: [
       mongodbAdapter,
@@ -64,9 +54,11 @@ function createFortuneStore (dbURL) {
     ]
   }
 
-  if (this.worker !== undefined) opts.hooks = hooks(this.worker)
+  // If store is initialized with a worker IPC-Emitter, make sure that the
+  // worker gets notified whenever a record is Created, Modified or Deleted.
+  if (worker !== undefined) opts.hooks = hooks(worker)
 
-  return fortune(models, opts)
+  return fortune(retrieveModels(), opts)
 }
 
 /**
@@ -74,14 +66,11 @@ function createFortuneStore (dbURL) {
  * @return {Object}  Models to be used in the store.
  */
 function retrieveModels () {
-  const keys = Object.keys(types)
-
   const models = {}
 
-  for (var i = 0; i < keys.length; i++) {
-    const key = keys[i]
+  Object.keys(types).forEach(key => {
     models[types[key]] = require(`./src/models/${key}`)
-  }
+  })
 
   return models
 }
@@ -93,18 +82,21 @@ function retrieveModels () {
  * @param  {Function} authorize  Authorize function provided by the user.
  */
 function includeAuthorization (notifyStore, authorize) {
+  // If no authorize function is provided do nothing.
   if (typeof authorize !== 'function') return
 
+  // Else we need to wrap the Notify Store request function with our own.
   const originalRequest = notifyStore.store.request.bind(notifyStore.store)
 
   notifyStore.store.request = function request (options) {
     let promise = Promise.resolve()
 
+    // Invoke the custom authorize function whenever the CRUD request is an HTTP
+    // request.
     if ('meta' in options && 'headers' in options.meta) {
       promise = authorize(notifyStore, options)
     }
 
-    return promise
-      .then(() => originalRequest(options))
+    return promise.then(() => originalRequest(options))
   }
 }
