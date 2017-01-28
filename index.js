@@ -44,14 +44,9 @@ module.exports = {
  * createFortuneStore creates and configures the fortune store.
  * @return {FortuneStore}  Fortune store instance.
  */
-function createFortuneStore ({ dbURL, worker }) {
+function createFortuneStore ({ url, worker }) {
   const opts = {
-    adapter: [
-      mongodbAdapter,
-      {
-        url: dbURL
-      }
-    ]
+    adapter: [ mongodbAdapter, { url } ]
   }
 
   // If store is initialized with a worker IPC-Emitter, make sure that the
