@@ -24,6 +24,18 @@ module.exports = {
   bot: Boolean,
 
   /**
+   * creator of the user.
+   * @type {Array}
+   */
+  creator: [type.USERS, 'created'],
+
+  /**
+   * created users by the user himself.
+   * @type {Array}
+   */
+  created: [[type.USERS], 'creator'],
+
+  /**
    * grants the user has.
    */
   grants: [[type.GRANTS], 'users'],
