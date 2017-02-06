@@ -1,5 +1,5 @@
 'use strict'
 
-module.exports = () => {
+module.exports = (worker) => {
   return [null, require('./output')(worker)]
 }
