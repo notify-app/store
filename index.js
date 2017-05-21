@@ -80,18 +80,12 @@ function includeAuthorization (notifyStore, authorize) {
   // If no authorize function is provided do nothing.
   if (typeof authorize !== 'function') return
 
-  // Else we need to wrap the Notify Store request function with our own.
+  // Keep a reference of the original FortuneJS request function.
   const originalRequest = notifyStore.store.request.bind(notifyStore.store)
 
+  // Replace the orignal FortuneJS request function to include the custom
+  // authorization logic.
   notifyStore.store.request = function request (options) {
-    let promise = Promise.resolve()
-
-    // Invoke the custom authorize function whenever the CRUD request is an HTTP
-    // request.
-    if ('meta' in options && 'headers' in options.meta) {
-      promise = authorize(notifyStore, options)
-    }
-
-    return promise.then(() => originalRequest(options))
+    return authorize(notifyStore, options).then(() => originalRequest(options))
   }
 }
